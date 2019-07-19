@@ -2,8 +2,9 @@ import requests              # POST 요청을 보내기 위함
 import json
 import telegram
 from pprint import pprint
+from apscheduler.schedulers.blocking import BlockingScheduler
 
-bot = telegram.Bot(token = 'YOUR_BOT_TOKEN')
+bot = telegram.Bot(token = 'Your_Bot_Token')
 
 # 들어간 사이트가 아닌 버스 정보 데이터가 오는 URL. chrome devtool - network에서 확인 가능
 srcURL = "http://bus.asan.go.kr/mobile/traffic/searchBusStopRoute"
@@ -22,7 +23,7 @@ def getUserID(bot) :
 
 def sendBusInfoMsg(url, header, data, user) :
     # 중요 : POST 방식을 사용함
-    # 가짜 헤더와 추가 데이터를 넣어서 POST 요청한다.
+    # 가짜 헤더와 추가 데이터를 넣어서 url에 POST 요청한다.
     res = requests.post(url, headers = header, data = data)
     msg = ""
 
@@ -37,4 +38,8 @@ def sendBusInfoMsg(url, header, data, user) :
     else :
         bot.sendMessage(chat_id = user, text = "Crawl Failed")
 
-sendBusInfoMsg(srcURL, fake_header, busStopInfo, getUserID(bot))
+
+sched = BlockingScheduler()
+# lambda is a callable
+sched.add_job(lambda: sendBusInfoMsg(srcURL, fake_header, busStopInfo, getUserID(bot)), 'interval', seconds=30)
+sched.start()
