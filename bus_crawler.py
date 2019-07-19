@@ -38,7 +38,7 @@ def sendBusInfoMsg(url, header, data, user) :
     else :
         bot.sendMessage(chat_id = user, text = "Crawl Failed")
 
-
+# 스케쥴러 세팅
 sched = BlockingScheduler()
 # lambda is a callable
 sched.add_job(lambda: sendBusInfoMsg(srcURL, fake_header, busStopInfo, getUserID(bot)), 'interval', seconds=30)
