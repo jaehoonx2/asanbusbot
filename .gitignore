@@ -1,3 +1,6 @@
+# exclude json files
+*.json
+
 # exclude execute files
 *.com
 *.class
@@ -6,7 +9,7 @@
 *.o
 *.so
 
-# exclude text files
+# exclude document files
 *.txt
 *.pptx
 *.docx
