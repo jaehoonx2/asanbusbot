@@ -5,29 +5,32 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 
-# Firebase 인증 및 앱 초기화
-with open("firebase_url.txt", "r") as f:
-    url = f.readline()
+def initFirebase() :
+    # Firebase 인증 및 앱 초기화
+    with open("firebase_url.txt", "r") as f:
+        url = f.readline()
 
-cred = credentials.Certificate('firebase_key.json')
-firebase_admin.initialize_app(cred,{
-    'databaseURL' : url
-})
+    cred = credentials.Certificate('firebase_key.json')
+    firebase_admin.initialize_app(cred,{
+        'databaseURL' : url
+    })
 
 # 시내버스 정류장 정보 파싱
-with open('AsanBus.csv', 'rt', encoding='euc-kr') as f:
-    stops = f.readlines()[1:]
+def parseCSV() :
+    with open('AsanBus.csv', 'rt', encoding='euc-kr') as f:
+        stops = f.readlines()[1:]
+    return stops
 
 # firebase db 위치 지정
-ref = db.reference('busStopId')
+def getReference() :
+    ref = db.reference('busStopId')
+    return ref
 
 # 데이터 저장
-'''
-for stop in stops:
-    columns = stop.split(",")
-    id, name = columns[0], columns[1]
-    ref.update({ id : name })
-    print(id, name)
-'''
-# 데이터 조회
-print(ref.get())
+def saveBusStopData(ref, busStopId, busStopName) :
+    ref.update({ busStopId : busStopName })
+    print(busStopId, busStopName)
+
+# 모든 데이터 조회
+def readAllBusStopData(ref) :
+    print(ref.get())
