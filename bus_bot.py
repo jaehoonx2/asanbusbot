@@ -12,7 +12,7 @@ def getUserID(bot) :
     return bot.getUpdates()[-1].message.chat.id
 
 def readToken() :
-    with open("bot_key.txt", "r") as f:
+    with open("asanbusbot_key.txt", "r") as f:
         token = f.readline()
     return token
 
