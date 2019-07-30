@@ -1,4 +1,4 @@
-# firebase.py
+# bus_firebase.py
 # 아산 시내버스 정류장 정보 csv 파일을 파싱하여 firebase에 저장
 # 혹은 firebase 내에 저장된 시내버스 정류장 정보를 조회
 import pyrebase
@@ -22,43 +22,41 @@ def initFirebase() :
     return db
 
 
-# 아산 시내버스 정류장 정보 파싱
-def parseCSV(csvFileName) :
-    with open(csvFileName, 'rt', encoding='euc-kr') as f:
-        stops = f.readlines()[1:]
-    return stops
-
-
+# 아산 시내버스 정류장 정보 파싱,
 # 파싱 데이터를 파이어베이스에 Insert
 def putCSVIntoFirebase(csvFileName) :
     db = initFirebase()
-    stops = parseCSV(csvFileName)
+   
+    with open(csvFileName, 'rt', encoding='euc-kr') as f:
+        stops = f.readlines()[1:]
 
     for stop in stops :
         columns = stop.split(",")
-        id, name = columns[0], columns[1]
-        setData(db, id, name)
-        print(id, name)
+        key, busStopName = columns[0], columns[1]
+        setData(db, key, busStopName)
+        print(key, busStopName)
 
 
-def setData(db, busStopId, busStopName) :
+def setData(db, key, busStopName) :
     # busStopId 를 key Format 으로 변환
-    if len(busStopId) < 2 :
-        cusKey = '28800000' + busStopId
-    elif len(busStopId) < 3 :
-        cusKey = '2880000' + busStopId
-    elif len(busStopId) < 4 :
-        cusKey = '288000' + busStopId
-    elif len(busStopId) < 5 :
-        cusKey = '28800' + busStopId
-    elif len(busStopId) < 6 :
-        cusKey = '2880' + busStopId
+    if len(key) < 2 :
+        busStopId = '28800000' + key
+    elif len(key) < 3 :
+        busStopId = '2880000' + key
+    elif len(key) < 4 :
+        busStopId = '288000' + key
+    elif len(key) < 5 :
+        busStopId = '28800' + key
+    elif len(key) < 6 :
+        busStopId = '2880' + key
+    else :
+        busStopId = key
 
     # data 작성
-    data = { "busStopName": busStopName }
+    data = { "busStopName" : busStopName }
 
     # 경로 설정 및 저장
-    db.child('busStopId').child(cusKey).set(data)
+    db.child('busStops').child(busStopId).set(data)
 
 
 def updateData(db, busStopId) :
