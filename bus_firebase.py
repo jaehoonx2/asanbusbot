@@ -1,6 +1,6 @@
 # bus_firebase.py
-# 아산 시내버스 정류장 정보 csv 파일을 파싱하여 firebase에 저장
-# 혹은 firebase 내에 저장된 시내버스 정류장 정보를 조회
+# 1. 아산 시내버스 정류장 CSV File을 파싱하여 Firebase에 저장
+# 2. Firebase 내에 저장되어 있는 정류장 정보를 CRUD
 import pyrebase
 
 # Firebase 인증 및 앱 초기화
@@ -33,11 +33,12 @@ def putCSVIntoFirebase(csvFileName) :
     for stop in stops :
         columns = stop.split(",")
         key, busStopName = columns[0], columns[1]
-        setData(db, key, busStopName)
+        createData(db, key, busStopName)
         print(key, busStopName)
 
 
-def setData(db, key, busStopName) :
+# Create
+def createData(db, key, busStopName) :
     # busStopId 를 key Format 으로 변환
     if len(key) < 2 :
         busStopId = '28800000' + key
@@ -59,17 +60,29 @@ def setData(db, key, busStopName) :
     db.child('busStops').child(busStopId).set(data)
 
 
-def updateData(db, busStopId, newName) :
-    db.child('busStops').child(busStopId).update({ "busStopName" : newName })
+# Read(ID)
+def readIdByName(db, busStopName) :
+    pass
 
 
-def removeData(db, busStopId) :
-    db.child('busStops').child(busStopId).remove()
-
-
-def getNameById(db, busStopId) :
+# Read(Name)
+def readNameById(db, busStopId) :
     stop = db.child('busStops').child(busStopId).get().val()
     return stop['busStopName']
 
-def getIdByName(db, busStopName) :
-    pass
+
+# Update(ID)
+def updateBusStopId(db, busStopId, newId) :
+    name = readNameById(db, busStopId)
+    deleteData(db, busStopId)
+    createData(db, newId, name)
+
+
+# Update(Name)
+def updateBusStopName(db, busStopId, newName) :
+    db.child('busStops').child(busStopId).update({ "busStopName" : newName })
+
+
+# Delete
+def deleteData(db, busStopId) :
+    db.child('busStops').child(busStopId).remove()
