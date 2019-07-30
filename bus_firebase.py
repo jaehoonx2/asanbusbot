@@ -59,17 +59,17 @@ def setData(db, key, busStopName) :
     db.child('busStops').child(busStopId).set(data)
 
 
-def updateData(db, busStopId) :
-    pass
+def updateData(db, busStopId, newName) :
+    db.child('busStops').child(busStopId).update({ "busStopName" : newName })
 
 
 def removeData(db, busStopId) :
-    pass
+    db.child('busStops').child(busStopId).remove()
 
 
 def getNameById(db, busStopId) :
-    pass
-
+    stop = db.child('busStops').child(busStopId).get().val()
+    return stop['busStopName']
 
 def getIdByName(db, busStopName) :
     pass
