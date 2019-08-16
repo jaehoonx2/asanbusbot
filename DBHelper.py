@@ -45,14 +45,13 @@ class DBHelper:
             cursor.execute( sql, stopname )
             idList = cursor.fetchall()
             #print(idList)
-            if type(idList) is tuple :  # return empty list
+            if type(idList) is tuple :  # DB에 해당 정류장 없으면 => empty list 반환
                 return []
-            else :                      # return values list
+            else :                      # 있으면 => values list 반환
                 return list(idList[0].values())
     
-    # 버스정류장 데이터 삽입하기
+    # 버스정류장 데이터 삽입하기 => 만약 이미 존재하면 아이디를 하나 더 추가한다
     def insertStopData( self, name, id ):
-        # 만약 동일한 정류장/아이디 가 존재하면 아이디를 하나 더 추가한다.
         with self.conn.cursor() as cursor:
             sql = '''
             INSERT INTO stops (name, id1)
