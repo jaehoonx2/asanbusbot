@@ -36,16 +36,19 @@ class DBHelper:
             self.conn.close()
 
     # 버스정류장 아이디 가져오기
-    def selectStop(self, stopname):
+    def selectStopIds(self, stopname):
         # 커서 오픈
         # with => 닫기 처리를 자동으로 처리해준다 => I/O 많이 사용
-        rows = None
+        idList = None
         with self.conn.cursor() as cursor:
-            sql = "SELECT * FROM stops WHERE name = %s;"
+            sql = "SELECT id1, id2 FROM stops WHERE name = %s;"
             cursor.execute( sql, stopname )
-            rows = cursor.fetchall()
-            #print(rows)
-        return rows
+            idList = cursor.fetchall()
+            #print(idList)
+            if type(idList) is tuple :  # return empty list
+                return []
+            else :                      # return values list
+                return list(idList[0].values())
     
     # 버스정류장 데이터 삽입하기
     def insertStopData( self, name, id ):
@@ -63,13 +66,4 @@ class DBHelper:
 # 단독으로 수행시에만 작동 => 테스트코드를 삽입해서 사용
 if __name__ == '__main__' :
     db = DBHelper() # 연결
-
-    # 데이터 삽입 후 조회
-    db.insertStopData("온양초", "1")
-    db.selectStop("온양초")
-
-    # 이미 존재하는 키에 삽입 후 조회
-    db.insertStopData("온양초", "2")
-    db.selectStop("온양초")
-
-    db.freeDB()    # 해제
+    db.freeDB()     # 해제
