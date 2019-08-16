@@ -20,7 +20,7 @@ class CSVHelper :
             stop_id = self.getNewId(id)
 
             print(stop_name, stop_id)
-            self.db.db_insertStopData(stop_name, stop_id)     # MariaDB에 데이터 삽입
+            self.db.insertStopData(stop_name, stop_id)     # MariaDB에 데이터 삽입
 
     # id 를 새로운 포맷으로 변환
     def getNewId(self, id) :

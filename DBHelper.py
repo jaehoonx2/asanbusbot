@@ -9,10 +9,10 @@ class DBHelper:
 
     # 생성자
     def __init__(self):
-        self.db_init()
+        self.initDB()
     
     # 멤버함수
-    def db_init(self):
+    def initDB(self):
         # db_connInfo.txt는 MariaDB 연결에 필요한
         # host, user, password, db 정보를 라인별로 갖고 있음
         # 파일을 읽어서 변수(conn_info)에 저장한 후
@@ -31,12 +31,12 @@ class DBHelper:
                         charset     = 'utf8',
                         cursorclass = my.cursors.DictCursor )
 
-    def db_free(self):
+    def freeDB(self):
         if self.conn:
             self.conn.close()
 
     # 버스정류장 아이디 가져오기
-    def db_selectStop(self, stopname):
+    def selectStop(self, stopname):
         # 커서 오픈
         # with => 닫기 처리를 자동으로 처리해준다 => I/O 많이 사용
         rows = None
@@ -44,11 +44,11 @@ class DBHelper:
             sql = "SELECT * FROM stops WHERE name = %s;"
             cursor.execute( sql, stopname )
             rows = cursor.fetchall()
-            print(rows)
+            #print(rows)
         return rows
     
     # 버스정류장 데이터 삽입하기
-    def db_insertStopData( self, name, id ):
+    def insertStopData( self, name, id ):
         # 만약 동일한 정류장/아이디 가 존재하면 아이디를 하나 더 추가한다.
         with self.conn.cursor() as cursor:
             sql = '''
@@ -65,11 +65,11 @@ if __name__ == '__main__' :
     db = DBHelper() # 연결
 
     # 데이터 삽입 후 조회
-    db.db_insertStopData("온양초", "1")
-    db.db_selectStop("온양초")
+    db.insertStopData("온양초", "1")
+    db.selectStop("온양초")
 
     # 이미 존재하는 키에 삽입 후 조회
-    db.db_insertStopData("온양초", "2")
-    db.db_selectStop("온양초")
+    db.insertStopData("온양초", "2")
+    db.selectStop("온양초")
 
-    db.db_free()    # 해제
+    db.freeDB()    # 해제
