@@ -46,3 +46,7 @@ class Asanbusbot :
 if __name__ == '__main__' :
         bot = Asanbusbot('asanbusbot_key.txt', 'db_connInfo.txt')
         bot.startBot()
+
+# 키보드 인터럽트
+# 접속 로그
+# DB 유사 검색어
